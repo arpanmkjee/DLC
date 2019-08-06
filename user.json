@@ -1,0 +1,46 @@
+{
+    "modules": [{
+        "id": 1,
+        "title": "SIT",
+        "pages": [{
+            "id": 11,
+            "widgets": [{
+                    "id": 111,
+                    "widgets": [{
+                            "id": 1111,
+                            "position": ["x", "y"],
+                            "fields": [{
+                                "id": 11111,
+                                "order": 1
+                            }]
+                        },
+                        {
+                            "id": 1112,
+                            "position": ["x", "y"],
+                            "fields": [{
+                                    "id": 11121,
+                                    "order": 1
+                                },
+                                {
+                                    "id": 11121,
+                                    "order": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 112,
+                    "position": ["x", "y"],
+                    "fields": [{
+                            "id": 1121
+                        },
+                        {
+                            "id": 1122
+                        }
+                    ]
+                }
+            ]
+        }]
+    }]
+}
