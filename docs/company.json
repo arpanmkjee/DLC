@@ -1,0 +1,55 @@
+{
+    "modules": [{
+        "id": 1,
+        "title": "SIT",
+        "pages": [{
+            "id": 11,
+            "title": "Dashboard",
+            "widgets": [{
+                    "id": 111,
+                    "title": "At a Glance",
+                    "widgets": [{
+                            "id": 1111,
+                            "title": "Ping Result",
+                            "fields": [{
+                                "id": 11111,
+                                "name": "Ping_Result",
+                                "disp_nm": "Ping Result"
+                            }]
+                        },
+                        {
+                            "id": 1112,
+                            "title": "Readings",
+                            "fields": [{
+                                    "id": 11121,
+                                    "name": "KWH_read",
+                                    "disp_nm": "KWH Reading"
+                                },
+                                {
+                                    "id": 11121,
+                                    "name": "KW_read",
+                                    "disp_nm": "KW Reading"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 112,
+                    "title": "Customer Information",
+                    "fields": [{
+                            "id": 1121,
+                            "name": "cust_nm",
+                            "disp_nm": "Customer Name"
+                        },
+                        {
+                            "id": 1122,
+                            "name": "acct_nm",
+                            "disp_nm": "Account Number"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }]
+}
