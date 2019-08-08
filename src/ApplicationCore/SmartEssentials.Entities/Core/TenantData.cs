@@ -11,5 +11,7 @@ namespace SmartEssentials.Models
 
         public Guid TenantID { get; set; }
 
+        public string JsonData { get; set; }
+
     }
 }

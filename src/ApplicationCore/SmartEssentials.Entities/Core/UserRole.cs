@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartEssentials.Models
 {
@@ -9,11 +7,11 @@ namespace SmartEssentials.Models
 
         public Guid UserRoleID { get; set; }
 
-
         public Guid RoleID { get; set; }
 
-
         public Guid UserID { get; set; }
+
+        public bool Active { get; set; }
 
     }
 }

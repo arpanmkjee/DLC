@@ -5,12 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="1.60.6" />
-    <PackageReference Include="Dapper.Extension" Version="1.0.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SmartEssentials.Models\SmartEssentials.Models.csproj" />
+    <PackageReference Include="PetaPoco" Version="5.1.306" />
   </ItemGroup>
 
 </Project>
