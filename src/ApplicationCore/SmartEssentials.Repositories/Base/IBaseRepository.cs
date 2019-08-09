@@ -9,9 +9,9 @@ namespace SmartEssentials.Repositories.Base
     {
         DBTransactionResult<T> Insert(T obj);
         DBTransactionResult<T> Update(T obj);
-        T Get(string column, string value);
-        T Activate(bool value);
-        bool Delete(string column, string value);
+        T Get(object primaryKeyValue);
+        bool Activate<AT>(object primaryKeyValue, bool value) where AT : IActivator;
+        bool Delete(object primaryKeyValue);
         IList<T> GetAll();
         PagedResult<T> Search(string sql);
         dynamic ExecuteSQL(string sql);

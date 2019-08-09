@@ -49,44 +49,57 @@ namespace SmartEssentials.Repositories.Base
             });
         }
 
-        public T Get(string column, string value)
+        public T Get(object primaryKeyValue)
         {
-            T newObj = new T();
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            return UsingDB<T>((db) =>
             {
-
-            }
-            return newObj;
+                T dbObj = db.Single<T>(primaryKeyValue);
+                return dbObj;
+            });
         }
 
-        public bool Delete(string column, string value)
+        public bool Delete(object primaryKeyValue)
         {
-            bool rtn = true;
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            return UsingDB<bool>((db) =>
             {
-
-            }
-            return rtn;
+                int rtn = db.Delete<T>(primaryKeyValue);
+                return rtn > 0;
+            });
         }
 
-        public T Activate(bool value)
+        public bool Activate<AT>(object primaryKeyValue, bool value) where AT : IActivator
         {
-            T newObj = new T();
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            return UsingDB<bool>((db) =>
             {
-
-            }
-            return newObj;
+                AT dbObj = db.Single<AT>(primaryKeyValue);
+                dbObj.Active = value;
+                int rtn = db.Update(dbObj, new List<string> { "Active" });
+                return rtn > 0;
+            });
         }
 
-        public IList<T> GetAll()
+        public PagedResult<T> GetAll(object tenantId, PagingRequest pagingRequest)
         {
-            IList<T> lst = null;
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            return UsingDB<PagedResult<T>>((db) =>
             {
+                string sqlCount = "SELECT COUNT(*) FROM " + typeof(T).Name + " WHERE TenantID='" + tenantId;
 
-            }
-            return lst;
+                int recordCount = db.ExecuteScalar<int>(sqlCount);
+
+                Sql sql = Sql.Builder.Where("TenantID = @0", tenantId);
+
+                // Assumes EnableAutoSelect is true
+                List<T> records = (List<T>)db.SkipTake<T>((pagingRequest.PageNo-1) * pagingRequest.PageSize, pagingRequest.PageSize, sql);
+
+                PagedResult<T> lstPagedResults = new PagedResult<T>
+                {
+                    Results = records,
+                    CurrentPage = pagingRequest.PageNo,
+                    PageSize = pagingRequest.PageSize,
+                    TotalCount = recordCount
+                };
+                return lstPagedResults;
+            });
         }
 
         public PagedResult<T> Search(string sql)
@@ -119,7 +132,7 @@ namespace SmartEssentials.Repositories.Base
             return rtn;
         }
 
-        private RT UsingDBTransact<RT>(Func<Database, RT> call) where RT : new()
+        protected RT UsingDBTransact<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
             using (Database db = new Database(GetDBConn(ConnectionString)))
@@ -135,7 +148,7 @@ namespace SmartEssentials.Repositories.Base
             return obj;
         }
 
-        private RT UsingDB<RT>(Func<Database, RT> call) where RT : new()
+        protected RT UsingDB<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
             using (Database db = new Database(GetDBConn(ConnectionString)))
