@@ -12,7 +12,7 @@ namespace SmartEssentials.Repositories.Base
         T Get(object primaryKeyValue);
         bool Activate<AT>(object primaryKeyValue, bool value) where AT : IActivator;
         bool Delete(object primaryKeyValue);
-        IList<T> GetAll();
+        PagedResult<T> GetAll(PagingRequest pagingRequest);
         PagedResult<T> Search(string sql);
         dynamic ExecuteSQL(string sql);
         dynamic ExecuteStoredProcedure(string storedProcedure, params object[] args);

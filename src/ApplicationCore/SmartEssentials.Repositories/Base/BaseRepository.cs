@@ -1,4 +1,5 @@
-﻿using PetaPoco.NetCore;
+﻿
+using PetaPoco;
 using SmartEssentials.Entities.Contracts;
 using SmartEssentials.Infrastructure.Configuration;
 using System;
@@ -10,10 +11,12 @@ namespace SmartEssentials.Repositories.Base
     public class BaseRepository<T> : IBaseRepository<T> where T : new()
     {
         private string ConnectionString = String.Empty;
+        private object TenantId = null;
 
-        public BaseRepository(string connectionString)
+        public BaseRepository(string connectionString, object tenantId)
         {
             ConnectionString = connectionString;
+            TenantId = tenantId;
         }
 
         private SqlConnection GetDBConn(string connStr)
@@ -78,15 +81,15 @@ namespace SmartEssentials.Repositories.Base
             });
         }
 
-        public PagedResult<T> GetAll(object tenantId, PagingRequest pagingRequest)
+        public PagedResult<T> GetAll(PagingRequest pagingRequest)
         {
             return UsingDB<PagedResult<T>>((db) =>
             {
-                string sqlCount = "SELECT COUNT(*) FROM " + typeof(T).Name + " WHERE TenantID='" + tenantId;
+                string sqlCount = "SELECT COUNT(1) FROM " + typeof(T).Name + " WHERE TenantID='" + TenantId;
 
                 int recordCount = db.ExecuteScalar<int>(sqlCount);
 
-                Sql sql = Sql.Builder.Where("TenantID = @0", tenantId);
+                Sql sql = Sql.Builder.Where("TenantID = @0", TenantId);
 
                 // Assumes EnableAutoSelect is true
                 List<T> records = (List<T>)db.SkipTake<T>((pagingRequest.PageNo-1) * pagingRequest.PageSize, pagingRequest.PageSize, sql);
