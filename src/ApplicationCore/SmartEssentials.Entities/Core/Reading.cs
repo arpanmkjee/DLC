@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartEssentials.Models
+namespace SmartEssentials.Entities.Core
 {
     public class Reading
     {

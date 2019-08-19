@@ -1,0 +1,7 @@
+https://github.com/utilpros/sm-it-v2/tree/master/sm-it/python
+saikiran.mandhala@gmail.com
+Github@9966
+
+Server: sm-it.database.windows.net
+User: fast/Learned#1
+Database: sm-it

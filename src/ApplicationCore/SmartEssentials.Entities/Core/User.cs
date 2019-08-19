@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace SmartEssentials.Models
+namespace SmartEssentials.Entities.Core
 {
     public class User
     {

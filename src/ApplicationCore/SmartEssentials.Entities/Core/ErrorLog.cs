@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SmartEssentials.Models
+namespace SmartEssentials.Entities.Core
 {
     public class ErrorLog
     {

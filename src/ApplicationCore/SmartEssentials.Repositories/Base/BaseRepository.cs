@@ -1,5 +1,5 @@
 ﻿
-using PetaPoco;
+using PetaPoco.NetCore;
 using SmartEssentials.Entities.Contracts;
 using SmartEssentials.Infrastructure.Configuration;
 using System;
@@ -10,13 +10,13 @@ namespace SmartEssentials.Repositories.Base
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : new()
     {
-        private string ConnectionString = String.Empty;
-        private object TenantId = null;
+        protected string _connectionString = String.Empty;
+        protected ClientContext _clientContext { get; set; }
 
-        public BaseRepository(string connectionString, object tenantId)
+        public BaseRepository(string connectionString, ClientContext clientContext)
         {
-            ConnectionString = connectionString;
-            TenantId = tenantId;
+            _connectionString = connectionString;
+            _clientContext = clientContext;
         }
 
         private SqlConnection GetDBConn(string connStr)
@@ -24,111 +24,26 @@ namespace SmartEssentials.Repositories.Base
             return new SqlConnection(connStr);
         }
 
-        public DBTransactionResult<T> Insert(T obj)
+        public void Initialize(string connectionString, ClientContext clientContext)
         {
-            return UsingDBTransact<DBTransactionResult<T>>((db) =>
-            {
-                T dbObj = (T)db.Insert(obj);
-                DBTransactionResult<T> dbTranResult = new DBTransactionResult<T>
-                {
-                    Obj = dbObj,
-                    IsTransactionSuccess = ReflectionHelper.CheckPrimaryKeyHasValue<T>(dbObj)
-                };
-                return dbTranResult;
-            });
+            _connectionString = connectionString;
+            _clientContext = clientContext;
         }
 
-        public DBTransactionResult<T> Update(T obj)
-        {
-            return UsingDBTransact<DBTransactionResult<T>>((db) =>
-            {
-                int rtn = db.Update(obj, ReflectionHelper.GetPrimaryKeyValue<T>(obj));
-                DBTransactionResult<T> dbTranResult = new DBTransactionResult<T>
-                {
-                    Obj = obj,
-                    IsTransactionSuccess = rtn > 0
-                };
-                return dbTranResult;
-            });
-        }
-
-        public T Get(object primaryKeyValue)
-        {
-            return UsingDB<T>((db) =>
-            {
-                T dbObj = db.Single<T>(primaryKeyValue);
-                return dbObj;
-            });
-        }
-
-        public bool Delete(object primaryKeyValue)
-        {
-            return UsingDB<bool>((db) =>
-            {
-                int rtn = db.Delete<T>(primaryKeyValue);
-                return rtn > 0;
-            });
-        }
-
-        public bool Activate<AT>(object primaryKeyValue, bool value) where AT : IActivator
-        {
-            return UsingDB<bool>((db) =>
-            {
-                AT dbObj = db.Single<AT>(primaryKeyValue);
-                dbObj.Active = value;
-                int rtn = db.Update(dbObj, new List<string> { "Active" });
-                return rtn > 0;
-            });
-        }
-
-        public PagedResult<T> GetAll(PagingRequest pagingRequest)
-        {
-            return UsingDB<PagedResult<T>>((db) =>
-            {
-                string sqlCount = "SELECT COUNT(1) FROM " + typeof(T).Name + " WHERE TenantID='" + TenantId;
-
-                int recordCount = db.ExecuteScalar<int>(sqlCount);
-
-                Sql sql = Sql.Builder.Where("TenantID = @0", TenantId);
-
-                // Assumes EnableAutoSelect is true
-                List<T> records = (List<T>)db.SkipTake<T>((pagingRequest.PageNo-1) * pagingRequest.PageSize, pagingRequest.PageSize, sql);
-
-                PagedResult<T> lstPagedResults = new PagedResult<T>
-                {
-                    Results = records,
-                    CurrentPage = pagingRequest.PageNo,
-                    PageSize = pagingRequest.PageSize,
-                    TotalCount = recordCount
-                };
-                return lstPagedResults;
-            });
-        }
-
-        public PagedResult<T> Search(string sql)
-        {
-            PagedResult<T> lst = null;
-            using (Database db = new Database(GetDBConn(ConnectionString)))
-            {
-
-            }
-            return lst;
-        }
-
-        public dynamic ExecuteSQL(string sql)
+        protected dynamic ExecuteSQL(string sql)
         {
             dynamic rtn = null;
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            using (Database db = new Database(GetDBConn(_connectionString)))
             {
 
             }
             return rtn;
         }
 
-        public dynamic ExecuteStoredProcedure(string storedProcedure, params object[] args)
+        protected dynamic ExecuteStoredProcedure(string storedProcedure, params object[] args)
         {
             dynamic rtn = null;
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            using (Database db = new Database(GetDBConn(_connectionString)))
             {
 
             }
@@ -138,7 +53,7 @@ namespace SmartEssentials.Repositories.Base
         protected RT UsingDBTransact<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            using (Database db = new Database(GetDBConn(_connectionString)))
             {
                 using (var transaction = db.GetTransaction())
                 {
@@ -154,7 +69,7 @@ namespace SmartEssentials.Repositories.Base
         protected RT UsingDB<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
-            using (Database db = new Database(GetDBConn(ConnectionString)))
+            using (Database db = new Database(GetDBConn(_connectionString)))
             {
                 obj = call(db);
             }

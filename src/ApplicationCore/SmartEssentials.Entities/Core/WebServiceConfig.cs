@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartEssentials.Models.Core
+namespace SmartEssentials.Entities.Core.Core
 {
     public class WebServiceConfig
     {
