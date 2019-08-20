@@ -7,7 +7,6 @@ namespace SmartEssentials.Repositories.Base
 {
     public interface IFullBaseRepository<T> where T : new()
     {
-        void Initialize(string connectionString, ClientContext clientContext);
         DBTransactionResult<T> Insert(T obj);
         DBTransactionResult<T> Update(T obj);
         T Get(object primaryKeyValue);

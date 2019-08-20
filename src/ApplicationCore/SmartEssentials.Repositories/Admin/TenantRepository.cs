@@ -1,4 +1,5 @@
-﻿using SmartEssentials.Entities.Contracts;
+﻿using Microsoft.Extensions.Options;
+using SmartEssentials.Entities.Contracts;
 using SmartEssentials.Entities.Core;
 using SmartEssentials.Repositories.Base;
 using System;
@@ -7,11 +8,12 @@ using System.Text;
 
 namespace SmartEssentials.Repositories
 {
-    public class TenantRepository : FullBaseRepository<Tenant>
+    public class TenantRepository : FullBaseRepository<Tenant>, ITenantRepository
     {
-        public TenantRepository(string connectionString, ClientContext clientContext) : base(connectionString, clientContext)
+        public TenantRepository(IOptions<AppSettings> appSettings,
+                              IClientContext clientContext) : base(appSettings, clientContext)
         {
-            _connectionString = connectionString;
+            _appSettings = appSettings.Value;
             _clientContext = clientContext;
         }
     }

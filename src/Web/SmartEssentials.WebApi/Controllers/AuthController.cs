@@ -8,7 +8,7 @@ namespace SmartEssentials.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EndUserController : ControllerBase
+    public class AuthController : ControllerBase
     {
        
     }

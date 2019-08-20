@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SmartEssentials.Entities.Core;
+using SmartEssentials.Repositories;
+using SmartEssentials.WebApi.Controllers.Base;
 
 namespace SmartEssentials.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : FullBaseController<IUserRepository,User>
     {
-       
+        public UserController(IUserRepository repository) : base(repository)
+        {
+            _repository = repository;
+        }
     }
 }

@@ -8,13 +8,13 @@ using System.Text;
 
 namespace SmartEssentials.Repositories
 {
-    public class RoleRepository : FullBaseRepository<Role>, IRoleRepository
+    public class AuthRepository : BaseRepository<User>, IAuthRepository
     {
-        public RoleRepository(IOptions<AppSettings> appSettings,
-                              IClientContext clientContext) : base(appSettings, clientContext)
+        public AuthRepository(IOptions<AppSettings> appSettings,
+                              IClientContext clientContext) : base(appSettings,clientContext)
         {
             _appSettings = appSettings.Value;
             _clientContext = clientContext;
         }
-    }
+}
 }

@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Options;
 using PetaPoco.NetCore;
 using SmartEssentials.Entities.Contracts;
 using SmartEssentials.Infrastructure.Configuration;
@@ -10,24 +11,19 @@ namespace SmartEssentials.Repositories.Base
 {
     public class FullBaseRepository<T> : IFullBaseRepository<T> where T : new()
     {
-        protected string _connectionString = String.Empty;
-        protected ClientContext _clientContext { get; set; }
+        protected AppSettings _appSettings;
+        protected IClientContext _clientContext { get; set; }
 
-        public FullBaseRepository(string connectionString, ClientContext clientContext)
+        public FullBaseRepository(IOptions<AppSettings> appSettings,
+                              IClientContext clientContext)
         {
-            _connectionString = connectionString;
+            _appSettings = appSettings.Value;
             _clientContext = clientContext;
         }
 
         private SqlConnection GetDBConn(string connStr)
         {
             return new SqlConnection(connStr);
-        }
-
-        public void Initialize(string connectionString, ClientContext clientContext)
-        {
-            _connectionString = connectionString;
-            _clientContext = clientContext;
         }
 
         public DBTransactionResult<T> Insert(T obj)
@@ -138,7 +134,7 @@ namespace SmartEssentials.Repositories.Base
         public dynamic ExecuteSQL(string sql)
         {
             dynamic rtn = null;
-            using (Database db = new Database(GetDBConn(_connectionString)))
+            using (Database db = new Database(GetDBConn(_appSettings.ConnectionString)))
             {
 
             }
@@ -148,7 +144,7 @@ namespace SmartEssentials.Repositories.Base
         public dynamic ExecuteStoredProcedure(string storedProcedure, params object[] args)
         {
             dynamic rtn = null;
-            using (Database db = new Database(GetDBConn(_connectionString)))
+            using (Database db = new Database(GetDBConn(_appSettings.ConnectionString)))
             {
 
             }
@@ -158,7 +154,7 @@ namespace SmartEssentials.Repositories.Base
         protected RT UsingDBTransact<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
-            using (Database db = new Database(GetDBConn(_connectionString)))
+            using (Database db = new Database(GetDBConn(_appSettings.ConnectionString)))
             {
                 using (var transaction = db.GetTransaction())
                 {
@@ -174,7 +170,7 @@ namespace SmartEssentials.Repositories.Base
         protected RT UsingDB<RT>(Func<Database, RT> call) where RT : new()
         {
             RT obj = new RT();
-            using (Database db = new Database(GetDBConn(_connectionString)))
+            using (Database db = new Database(GetDBConn(_appSettings.ConnectionString)))
             {
                 obj = call(db);
             }

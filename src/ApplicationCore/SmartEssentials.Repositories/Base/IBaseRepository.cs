@@ -7,6 +7,6 @@ namespace SmartEssentials.Repositories.Base
 {
     public interface IBaseRepository<T> where T : new()
     {
-        void Initialize(string connectionString, ClientContext clientContext);
+        
     }
 }

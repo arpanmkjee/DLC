@@ -3,7 +3,7 @@ using System;
 
 namespace SmartEssentials.Entities.Contracts
 {
-    public class ClientContext
+    public class ClientContext : IClientContext
     {
         public ClientContext()
         {
