@@ -9,6 +9,6 @@ namespace SmartEssentials.Repositories
 {
     public interface IUserRepository : IFullBaseRepository<User>
     {
-        
+        User GetByUsername(string username);
     }
 }
